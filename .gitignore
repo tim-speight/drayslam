@@ -1,0 +1,21 @@
+**envPaths
+**/configure/O.*/
+**/*App/Db/O.*/
+**/*App/src/O.*/
+**/dbd/
+**/bin/
+**/db/
+!**/*App/Db/
+**.log
+**.sav*
+**/.metadata/*
+**BOY Examples*
+**BOY Image Library/*
+
+**.*~
+.vscode
+**.vs/
+**/__pycache__/*
+assets
+/.iocsh_history
+.iocsh_history
