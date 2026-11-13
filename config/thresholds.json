@@ -1,0 +1,23 @@
+{
+  "snr_down": {
+    "minor": 8.0,
+    "major": 6.0,
+    "invalid": 3.0
+  },
+
+  "snr_up": {
+    "minor": 8.0,
+    "major": 6.0,
+    "invalid": 3.0
+  },
+
+  "downstream_kbps": {
+    "minor": 25000,
+    "major": 18000
+  },
+
+  "upstream_kbps": {
+    "minor": 6000,
+    "major": 3000
+  }
+}

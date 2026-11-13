@@ -1,0 +1,16 @@
+[project]
+name = "drayslam"
+version = "0.1.0"
+description = "DrayTek Vigor 166 DSL telemetry over EPICS P4P, InfluxDB and FastAPI"
+license = { text = "BSD-3-Clause" }
+requires-python = ">=3.12"
+
+[tool.pytest.ini_options]
+# Repo root doubles as the venv: never collect site-packages test suites.
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-p no:cacheprovider"
+
+[tool.mypy]
+python_version = "3.15"
+ignore_missing_imports = true

@@ -1,0 +1,388 @@
+<display version="2.0.0">
+  <name>DSLAM Status Monitor</name>
+  <width>650</width>
+  <height>500</height>
+  <background_color>
+    <color name="BACKGROUND" red="240" green="240" blue="240">
+    </color>
+  </background_color>
+
+  <!-- Title Banner -->
+  <widget type="label" version="2.0.0">
+    <name>Title</name>
+    <text>DSLAM Status &amp; Performance Monitor</text>
+    <x>20</x>
+    <y>15</y>
+    <width>610</width>
+    <height>35</height>
+    <font>
+      <font name="Header 1" family="Liberation Sans" style="BOLD" size="18.0">
+      </font>
+    </font>
+    <foreground_color>
+      <color name="TEXT" red="0" green="0" blue="0">
+      </color>
+    </foreground_color>
+    <horizontal_alignment>1</horizontal_alignment>
+  </widget>
+
+  <!-- Overall Status Group -->
+  <widget type="group" version="2.0.0">
+    <name>Group_System</name>
+    <x>20</x>
+    <y>65</y>
+    <width>610</width>
+    <height>90</height>
+    <background_color>
+      <color name="Group Background" red="250" green="250" blue="250">
+      </color>
+    </background_color>
+    <border_color>
+      <color name="BORDER" red="150" green="150" blue="150">
+      </color>
+    </border_color>
+
+    <widget type="label" version="2.0.0">
+      <name>Lbl_Overall</name>
+      <text>Overall Status:</text>
+      <x>15</x>
+      <y>12</y>
+      <width>110</width>
+      <height>25</height>
+    </widget>
+
+    <widget type="textupdate" version="2.0.0">
+      <name>Txt_Overall</name>
+      <pv_name>DSLAM:STATUS</pv_name>
+      <x>135</x>
+      <y>12</y>
+      <width>150</width>
+      <height>25</height>
+      <font>
+        <font family="Liberation Sans" style="BOLD" size="12.0">
+        </font>
+      </font>
+      <background_color>
+        <color name="Read-only Background" red="230" green="230" blue="230">
+        </color>
+      </background_color>
+      <horizontal_alignment>1</horizontal_alignment>
+    </widget>
+
+    <widget type="label" version="2.0.0">
+      <name>Lbl_DeviceUp</name>
+      <text>Device Up:</text>
+      <x>320</x>
+      <y>12</y>
+      <width>90</width>
+      <height>25</height>
+    </widget>
+
+    <widget type="led" version="2.0.0">
+      <name>LED_DeviceUp</name>
+      <pv_name>DSLAM:DEVICE_UP</pv_name>
+      <x>425</x>
+      <y>12</y>
+      <width>25</width>
+      <height>25</height>
+      <off_color>
+        <color name="LED Red" red="200" green="0" blue="0">
+        </color>
+      </off_color>
+      <on_color>
+        <color name="LED Green" red="0" green="200" blue="0">
+        </color>
+      </on_color>
+    </widget>
+
+    <widget type="label" version="2.0.0">
+      <name>Lbl_State</name>
+      <text>State:</text>
+      <x>15</x>
+      <y>45</y>
+      <width>110</width>
+      <height>25</height>
+    </widget>
+
+    <widget type="textupdate" version="2.0.0">
+      <name>Txt_State</name>
+      <pv_name>DSLAM:STATE</pv_name>
+      <x>135</x>
+      <y>45</y>
+      <width>150</width>
+      <height>25</height>
+    </widget>
+
+    <widget type="label" version="2.0.0">
+      <name>Lbl_Profile</name>
+      <text>Profile:</text>
+      <x>320</x>
+      <y>45</y>
+      <width>90</width>
+      <height>25</height>
+    </widget>
+
+    <widget type="textupdate" version="2.0.0">
+      <name>Txt_Profile</name>
+      <pv_name>DSLAM:PROFILE</pv_name>
+      <x>425</x>
+      <y>45</y>
+      <width>165</width>
+      <height>25</height>
+    </widget>
+  </widget>
+
+  <!-- Bandwidth & SNR Metrics Group -->
+  <widget type="group" version="2.0.0">
+    <name>Group_Metrics</name>
+    <x>20</x>
+    <y>165</y>
+    <width>610</width>
+    <height>165</height>
+    <background_color>
+      <color name="Group Background" red="250" green="250" blue="250">
+      </color>
+    </background_color>
+    <border_color>
+      <color name="BORDER" red="150" green="150" blue="150">
+      </color>
+    </border_color>
+
+    <widget type="label" version="2.0.0">
+      <name>Lbl_MetricsHeader</name>
+      <text>Direction / Metric</text>
+      <x>15</x>
+      <y>10</y>
+      <width>130</width>
+      <height>25</height>
+      <font>
+        <font family="Liberation Sans" style="BOLD" size="12.0">
+        </font>
+      </font>
+    </widget>
+
+    <widget type="label" version="2.0.0">
+      <name>Lbl_BwHeader</name>
+      <text>Bandwidth (kbps)</text>
+      <x>160</x>
+      <y>10</y>
+      <width>130</width>
+      <height>25</height>
+      <font>
+        <font family="Liberation Sans" style="BOLD" size="12.0">
+        </font>
+      </font>
+      <horizontal_alignment>1</horizontal_alignment>
+    </widget>
+
+    <widget type="label" version="2.0.0">
+      <name>Lbl_SnrHeader</name>
+      <text>SNR (dB)</text>
+      <x>310</x>
+      <y>10</y>
+      <width>100</width>
+      <height>25</height>
+      <font>
+        <font family="Liberation Sans" style="BOLD" size="12.0">
+        </font>
+      </font>
+      <horizontal_alignment>1</horizontal_alignment>
+    </widget>
+
+    <widget type="label" version="2.0.0">
+      <name>Lbl_AttenHeader</name>
+      <text>Attenuation (dB)</text>
+      <x>430</x>
+      <y>10</y>
+      <width>130</width>
+      <height>25</height>
+      <font>
+        <font family="Liberation Sans" style="BOLD" size="12.0">
+        </font>
+      </font>
+      <horizontal_alignment>1</horizontal_alignment>
+    </widget>
+
+    <!-- Upstream Row -->
+    <widget type="label" version="2.0.0">
+      <name>Lbl_Upstream</name>
+      <text>Upstream:</text>
+      <x>15</x>
+      <y>45</y>
+      <width>130</width>
+      <height>25</height>
+    </widget>
+
+    <widget type="textupdate" version="2.0.0">
+      <name>Txt_UpstreamBw</name>
+      <pv_name>DSLAM:UPSTREAM_KBPS</pv_name>
+      <x>160</x>
+      <y>45</y>
+      <width>130</width>
+      <height>25</height>
+      <horizontal_alignment>1</horizontal_alignment>
+    </widget>
+
+    <widget type="textupdate" version="2.0.0">
+      <name>Txt_UpstreamSnr</name>
+      <pv_name>DSLAM:SNR_UP</pv_name>
+      <x>310</x>
+      <y>45</y>
+      <width>100</width>
+      <height>25</height>
+      <horizontal_alignment>1</horizontal_alignment>
+    </widget>
+
+    <widget type="textupdate" version="2.0.0">
+      <name>Txt_UpstreamAtten</name>
+      <pv_name>DSLAM:ATTENUATION_UP</pv_name>
+      <x>430</x>
+      <y>45</y>
+      <width>130</width>
+      <height>25</height>
+      <horizontal_alignment>1</horizontal_alignment>
+    </widget>
+
+    <!-- Downstream Row -->
+    <widget type="label" version="2.0.0">
+      <name>Lbl_Downstream</name>
+      <text>Downstream:</text>
+      <x>15</x>
+      <y>80</y>
+      <width>130</width>
+      <height>25</height>
+    </widget>
+
+    <widget type="textupdate" version="2.0.0">
+      <name>Txt_DownstreamBw</name>
+      <pv_name>DSLAM:DOWNSTREAM_KBPS</pv_name>
+      <x>160</x>
+      <y>80</y>
+      <width>130</width>
+      <height>25</height>
+      <horizontal_alignment>1</horizontal_alignment>
+    </widget>
+
+    <widget type="textupdate" version="2.0.0">
+      <name>Txt_DownstreamSnr</name>
+      <pv_name>DSLAM:SNR_DOWN</pv_name>
+      <x>310</x>
+      <y>80</y>
+      <width>100</width>
+      <height>25</height>
+      <horizontal_alignment>1</horizontal_alignment>
+    </widget>
+
+    <widget type="textupdate" version="2.0.0">
+      <name>Txt_DownstreamAtten</name>
+      <pv_name>DSLAM:ATTENUATION_DOWN</pv_name>
+      <x>430</x>
+      <y>80</y>
+      <width>130</width>
+      <height>25</height>
+      <horizontal_alignment>1</horizontal_alignment>
+    </widget>
+
+    <!-- Alarm status indicators -->
+    <widget type="label" version="2.0.0">
+      <name>Lbl_Alarms</name>
+      <text>SNR Alarms:</text>
+      <x>15</x>
+      <y>115</y>
+      <width>130</width>
+      <height>25</height>
+    </widget>
+
+    <widget type="textupdate" version="2.0.0">
+      <name>Txt_SnrUpAlarm</name>
+      <pv_name>DSLAM:SNR_UP_ALARM</pv_name>
+      <x>160</x>
+      <y>115</y>
+      <width>130</width>
+      <height>25</height>
+      <horizontal_alignment>1</horizontal_alignment>
+    </widget>
+
+    <widget type="textupdate" version="2.0.0">
+      <name>Txt_SnrDownAlarm</name>
+      <pv_name>DSLAM:SNR_DOWN_ALARM</pv_name>
+      <x>310</x>
+      <y>115</y>
+      <width>100</width>
+      <height>25</height>
+      <horizontal_alignment>1</horizontal_alignment>
+    </widget>
+  </widget>
+
+  <!-- Diagnostics & Uptime Group -->
+  <widget type="group" version="2.0.0">
+    <name>Group_Diagnostics</name>
+    <x>20</x>
+    <y>340</y>
+    <width>610</width>
+    <height>135</height>
+    <background_color>
+      <color name="Group Background" red="250" green="250" blue="250">
+      </color>
+    </background_color>
+    <border_color>
+      <color name="BORDER" red="150" green="150" blue="150">
+      </color>
+    </border_color>
+
+    <widget type="label" version="2.0.0">
+      <name>Lbl_Uptime</name>
+      <text>Uptime:</text>
+      <x>15</x>
+      <y>12</y>
+      <width>110</width>
+      <height>25</height>
+    </widget>
+
+    <widget type="textupdate" version="2.0.0">
+      <name>Txt_Uptime</name>
+      <pv_name>DSLAM:UPTIME</pv_name>
+      <x>135</x>
+      <y>12</y>
+      <width>180</width>
+      <height>25</height>
+    </widget>
+
+    <widget type="label" version="2.0.0">
+      <name>Lbl_Timestamp</name>
+      <text>Last Update:</text>
+      <x>325</x>
+      <y>12</y>
+      <width>95</width>
+      <height>25</height>
+    </widget>
+
+    <widget type="textupdate" version="2.0.0">
+      <name>Txt_Timestamp</name>
+      <pv_name>DSLAM:TIMESTAMP</pv_name>
+      <x>430</x>
+      <y>12</y>
+      <width>160</width>
+      <height>25</height>
+    </widget>
+
+    <widget type="label" version="2.0.0">
+      <name>Lbl_LastEvent</name>
+      <text>Last Event:</text>
+      <x>15</x>
+      <y>50</y>
+      <width>110</width>
+      <height>25</height>
+    </widget>
+
+    <widget type="textupdate" version="2.0.0">
+      <name>Txt_LastEvent</name>
+      <pv_name>DSLAM:LAST_EVENT</pv_name>
+      <x>135</x>
+      <y>50</y>
+      <width>455</width>
+      <height>55</height>
+      <wrap_words>true</wrap_words>
+    </widget>
+  </widget>
+</display>

@@ -1,0 +1,10 @@
+[Unit]
+After=network-online.target
+Wants=network-online.target
+[Service]
+WorkingDirectory=/opt/dslam-monitor
+EnvironmentFile=/opt/dslam-monitor/.env
+ExecStart=/opt/dslam-monitor/.venv/bin/python main.py
+Restart=always
+[Install]
+WantedBy=multi-user.target

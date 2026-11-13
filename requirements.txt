@@ -1,0 +1,9 @@
+requests>=2.32
+beautifulsoup4>=4.13
+lxml>=5.3
+python-dotenv>=1.1
+influxdb-client>=1.49
+fastapi>=0.118
+uvicorn>=0.36
+pvxslibs==1.5.3
+p4p==4.3.0

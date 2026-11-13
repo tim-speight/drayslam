@@ -1,0 +1,60 @@
+---
+- name: Install InfluxDB 2.x on Raspberry Pi
+  hosts: localhost
+  connection: local
+  become: true
+
+  tasks:
+
+    - name: Ensure keyring directory exists
+      file:
+        path: /etc/apt/keyrings
+        state: directory
+        mode: "0755"
+
+    - name: Download InfluxData repository key
+      get_url:
+        url: https://repos.influxdata.com/influxdata-archive.key
+        dest: /tmp/influxdata-archive.key
+        mode: "0644"
+
+    - name: Install repository key
+      shell: |
+        gpg --dearmor < /tmp/influxdata-archive.key > /etc/apt/keyrings/influxdata-archive.gpg
+      args:
+        creates: /etc/apt/keyrings/influxdata-archive.gpg
+
+    - name: Configure InfluxDB repository
+      copy:
+        dest: /etc/apt/sources.list.d/influxdb.list
+        content: |
+          deb [signed-by=/etc/apt/keyrings/influxdata-archive.gpg] https://repos.influxdata.com/debian stable main
+
+    - name: Update package cache
+      apt:
+        update_cache: true
+
+    - name: Install InfluxDB 2
+      apt:
+        name: influxdb2
+        state: present
+
+    - name: Enable InfluxDB service
+      systemd:
+        name: influxdb
+        enabled: true
+
+    - name: Start InfluxDB service
+      systemd:
+        name: influxdb
+        state: started
+
+    - name: Wait for HTTP endpoint
+      wait_for:
+        port: 8086
+        host: 127.0.0.1
+        timeout: 60
+
+    - name: Display setup URL
+      debug:
+        msg: "InfluxDB available at http://localhost:8086"
