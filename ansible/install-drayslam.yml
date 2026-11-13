@@ -6,21 +6,38 @@
   vars:
     drayslam_user: drayslam
     drayslam_group: drayslam
+
     drayslam_install_dir: /opt/drayslam
     drayslam_config_dir: /etc/drayslam
     drayslam_log_dir: /var/log/drayslam
 
   tasks:
 
-    - name: Create drayslam service account
+    - name: Ensure drayslam group exists
+      group:
+        name: "{{ drayslam_group }}"
+        system: true
+
+    - name: Ensure drayslam user exists
       user:
         name: "{{ drayslam_user }}"
+        group: "{{ drayslam_group }}"
         system: true
         shell: /usr/sbin/nologin
         home: "{{ drayslam_install_dir }}"
         create_home: false
 
-    - name: Create installation directories
+    - name: Install operating system dependencies
+      apt:
+        update_cache: true
+        state: present
+        name:
+          - python3
+          - python3-pip
+          - python3-venv
+          - rsync
+
+    - name: Create application directories
       file:
         path: "{{ item }}"
         state: directory
@@ -32,17 +49,7 @@
         - "{{ drayslam_config_dir }}"
         - "{{ drayslam_log_dir }}"
 
-    - name: Install python3 venv support
-      apt:
-        name:
-          - python3
-          - python3-venv
-          - python3-pip
-          - rsync
-        state: present
-        update_cache: true
-
-    - name: Deploy DraySLAM application tree
+    - name: Deploy application
       synchronize:
         src: "{{ playbook_dir }}/../"
         dest: "{{ drayslam_install_dir }}/"
@@ -50,50 +57,63 @@
         rsync_opts:
           - "--exclude=.git"
           - "--exclude=.github"
-          - "--exclude=.pytest_cache"
-          - "--exclude=__pycache__"
           - "--exclude=.venv"
           - "--exclude=venv"
+          - "--exclude=__pycache__"
+          - "--exclude=.pytest_cache"
           - "--exclude=htmlcov"
           - "--exclude=.mypy_cache"
 
-    - name: Ensure ownership of deployed files
+    - name: Ensure ownership of application
       file:
         path: "{{ drayslam_install_dir }}"
         owner: "{{ drayslam_user }}"
         group: "{{ drayslam_group }}"
         recurse: true
 
-    - name: Create virtual environment
+    - name: Create Python virtual environment
       command:
         cmd: python3 -m venv {{ drayslam_install_dir }}/venv
         creates: "{{ drayslam_install_dir }}/venv/bin/python"
 
     - name: Upgrade pip tooling
       pip:
+        virtualenv: "{{ drayslam_install_dir }}/venv"
         name:
           - pip
           - setuptools
           - wheel
         state: latest
-        virtualenv: "{{ drayslam_install_dir }}/venv"
 
-    - name: Install DraySLAM requirements
+    - name: Install Python dependencies
       pip:
         requirements: "{{ drayslam_install_dir }}/requirements.txt"
         virtualenv: "{{ drayslam_install_dir }}/venv"
 
-    - name: Install DraySLAM environment file
+    - name: Check for existing environment file
+      stat:
+        path: "{{ drayslam_config_dir }}/drayslam.env"
+      register: drayslam_env
+
+    - name: Create environment file on first install only
       template:
-        src: ../template/drayslam.env.j2
+        src: templates/drayslam.env.j2
         dest: "{{ drayslam_config_dir }}/drayslam.env"
         owner: root
-        group: "{{ drayslam_group }}"
+        group: engineers
         mode: "0640"
+      when: not drayslam_env.stat.exists
+
+    - name: Report existing environment file preserved
+      debug:
+        msg: >
+          Existing {{ drayslam_config_dir }}/drayslam.env found.
+          Local credentials preserved. Configuration file was not overwritten.
+      when: drayslam_env.stat.exists
 
     - name: Install systemd service
       template:
-        src: ../template/drayslam.service.j2
+        src: templates/drayslam.service.j2
         dest: /etc/systemd/system/drayslam.service
         owner: root
         group: root
@@ -103,8 +123,12 @@
       systemd:
         daemon_reload: true
 
-    - name: Enable and start DraySLAM
+    - name: Enable DraySLAM
       systemd:
         name: drayslam
         enabled: true
+
+    - name: Restart DraySLAM
+      systemd:
+        name: drayslam
         state: restarted
