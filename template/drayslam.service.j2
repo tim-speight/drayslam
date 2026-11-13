@@ -1,0 +1,27 @@
+[Unit]
+Description=DraySLAM DSL Statistics Collector
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+
+User=drayslam
+Group=drayslam
+
+WorkingDirectory=/opt/drayslam
+
+EnvironmentFile=/etc/drayslam/drayslam.env
+
+ExecStart=/opt/drayslam/venv/bin/python /opt/drayslam/main.py
+
+Restart=always
+RestartSec=10
+
+SyslogIdentifier=drayslam
+
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

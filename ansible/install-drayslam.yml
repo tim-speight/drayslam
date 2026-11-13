@@ -1,0 +1,110 @@
+---
+- name: Install DraySLAM
+  hosts: all
+  become: true
+
+  vars:
+    drayslam_user: drayslam
+    drayslam_group: drayslam
+    drayslam_install_dir: /opt/drayslam
+    drayslam_config_dir: /etc/drayslam
+    drayslam_log_dir: /var/log/drayslam
+
+  tasks:
+
+    - name: Create drayslam service account
+      user:
+        name: "{{ drayslam_user }}"
+        system: true
+        shell: /usr/sbin/nologin
+        home: "{{ drayslam_install_dir }}"
+        create_home: false
+
+    - name: Create installation directories
+      file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ drayslam_user }}"
+        group: "{{ drayslam_group }}"
+        mode: "0755"
+      loop:
+        - "{{ drayslam_install_dir }}"
+        - "{{ drayslam_config_dir }}"
+        - "{{ drayslam_log_dir }}"
+
+    - name: Install python3 venv support
+      apt:
+        name:
+          - python3
+          - python3-venv
+          - python3-pip
+          - rsync
+        state: present
+        update_cache: true
+
+    - name: Deploy DraySLAM application tree
+      synchronize:
+        src: "{{ playbook_dir }}/../"
+        dest: "{{ drayslam_install_dir }}/"
+        delete: true
+        rsync_opts:
+          - "--exclude=.git"
+          - "--exclude=.github"
+          - "--exclude=.pytest_cache"
+          - "--exclude=__pycache__"
+          - "--exclude=.venv"
+          - "--exclude=venv"
+          - "--exclude=htmlcov"
+          - "--exclude=.mypy_cache"
+
+    - name: Ensure ownership of deployed files
+      file:
+        path: "{{ drayslam_install_dir }}"
+        owner: "{{ drayslam_user }}"
+        group: "{{ drayslam_group }}"
+        recurse: true
+
+    - name: Create virtual environment
+      command:
+        cmd: python3 -m venv {{ drayslam_install_dir }}/venv
+        creates: "{{ drayslam_install_dir }}/venv/bin/python"
+
+    - name: Upgrade pip tooling
+      pip:
+        name:
+          - pip
+          - setuptools
+          - wheel
+        state: latest
+        virtualenv: "{{ drayslam_install_dir }}/venv"
+
+    - name: Install DraySLAM requirements
+      pip:
+        requirements: "{{ drayslam_install_dir }}/requirements.txt"
+        virtualenv: "{{ drayslam_install_dir }}/venv"
+
+    - name: Install DraySLAM environment file
+      template:
+        src: ../template/drayslam.env.j2
+        dest: "{{ drayslam_config_dir }}/drayslam.env"
+        owner: root
+        group: "{{ drayslam_group }}"
+        mode: "0640"
+
+    - name: Install systemd service
+      template:
+        src: ../template/drayslam.service.j2
+        dest: /etc/systemd/system/drayslam.service
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Reload systemd
+      systemd:
+        daemon_reload: true
+
+    - name: Enable and start DraySLAM
+      systemd:
+        name: drayslam
+        enabled: true
+        state: restarted
